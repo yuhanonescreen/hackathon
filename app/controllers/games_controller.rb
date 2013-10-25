@@ -61,13 +61,10 @@ class GamesController < ApplicationController
   end
   
   def score
-    id = params[:id]
-    unless id
-      render :json => nil
-      return
-    end
+    content_id = params[:content_id]
+    user_id = cookies[:user_id]
      
-    user = User.find( id )
+    user = User.find( user_id )
     score = user.score if user
     render :json => score
   end
@@ -79,7 +76,6 @@ class GamesController < ApplicationController
     answer = Answer.new
     answer.user_id = user_id
     answer.answer = params[:answer]
-binding.pry
     answer.content_id = params[:content_id].to_i
     answer.save!
 
@@ -101,7 +97,9 @@ binding.pry
   end
   
   def report
-    
+    user_id = cookies[:user_id]
+    user = User.find( user_id )
+    @my_score = user.score
   end
   
 end

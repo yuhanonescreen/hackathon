@@ -36,6 +36,7 @@ Hack::Application.routes.draw do
         collection do
           get 'index'
           get 'score'
+          get 'report'
           post 'answer'
           post 'create_game'
         end
