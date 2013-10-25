@@ -63,10 +63,11 @@ class GamesController < ApplicationController
   def score
     content_id = params[:content_id]
     user_id = cookies[:user_id]
-     
+    
+    users = User.where('id != ?', user_id).all
     user = User.find( user_id )
-    score = user.score if user
-    render :json => score
+    users = Hash[ users.collect {|u| [u.id, u.score]}] 
+    render :json => {:score=> user.score, :users => users}
   end
   
 
