@@ -10,6 +10,7 @@ class GamesController < ApplicationController
       unless user
         user = User.new
         user.oauth_token = ip
+        user.name = ip
         user.save!
       end
 
@@ -42,6 +43,10 @@ class GamesController < ApplicationController
     @text = response.results.collect {|t| t.text}.flatten
   end
   
+  def game
+    index    
+  end
+  
   def create_game
     content_id = params[:content_id]
 
@@ -62,7 +67,7 @@ class GamesController < ApplicationController
     
     users = User.where('id != ?', user_id).all
     user = User.find( user_id )
-    users = Hash[ users.collect {|u| [u.id, u.score]}] 
+    users = Hash[ users.collect {|u| [u.name, u.score]}] 
     render :json => {:score=> user.score, :users => users}
   end
 
@@ -74,17 +79,28 @@ class GamesController < ApplicationController
     answer.answer = params[:answer]
     answer.content_id = params[:content_id].to_i
     answer.save!
+    my_answer = answer
 
     @game = Game.first(:order => 'id desc')
-    similar_answers = Answer.where( :content_id => @game.content_id, :answer => answer)
+    similar_answers = Answer.where( :content_id => @game.content_id, :answer => params[:answer])
                   .where('user_id != ?', user_id)
+
     matched = false
+    time_now = Time.now.to_i
+
     if(similar_answers.length > 0)
+      my_answer.matched = 1
       similar_answers.each do |answer|
         user = User.find( answer.user_id )
-        user.score += 1
-        user.save!
-        matched = true
+
+        time_diff = time_now - answer.created_at.to_i
+        if(time_diff < 10)
+          user.score += 1
+          user.save!
+          matched = true
+          answer.matched = 1
+          answer.save!
+        end
       end
       
       user = User.find( user_id )
@@ -92,6 +108,16 @@ class GamesController < ApplicationController
       user.save!
     end
     render :json => {:matched =>  matched }
+  end
+  
+  def login
+    consumer_key = 'KJeCsg9oPlXd1FaPSokHQg'
+    consumer_secret = "YNwIi3Y6dTlQecJUXmFNazUuvJ8DEfjjY5IBR3QpdDE"
+
+    @consumer = OAuth::Consumer.new(consumer_key, consumer_secret, :site => "https://agree2")
+    @request_token = @consumer.get_request_token
+    session[:request_token] = @request_token
+    redirect_to @request_token.authorize_url
   end
   
   def report

@@ -21,17 +21,16 @@
         <script>
             com.onescreen.apps.load("10971-3c4a4a8a69f4c1ee7fd6d7fe72df7329", "contextual", {
 				textLocation: 'os_text',
-                searchable: true,
                 playbackPriority: 'html5, flash',
                 showThumbs:true,
                 autoPlay:true,
-                searchUrl: 'http://data.1sfx.net/playlists/1005500/5589/1980/2316961.jsonp?plf=os',
+				media:"http://data.1sfx.net/playlists/1202737/3132/0/2304255.jsonp?plf=os",
                 playerRenderer: "http://10.101.100.208:8080/test/webroot/js/hackathonPlayer.js",
                 thumbsRenderer: "http://10.101.100.208:8080/test/webroot/js/hackathonPlaylist.js"
             });
         </script>
 
-		<div id='os_text' style="display:none;">
+		<div id='os_text'>
 			<%= @text %>
 		</div>
 
