@@ -6,7 +6,7 @@ class GamesController < ApplicationController
     if( @game)
       time_passed = Time.now.to_i - @game.created_at.to_i
       if( time_passed < @game.duration + 20 ) 
-        # play the game
+        # play the f
         
         return
       end
@@ -19,10 +19,8 @@ class GamesController < ApplicationController
       config.consumer_secret = "YNwIi3Y6dTlQecJUXmFNazUuvJ8DEfjjY5IBR3QpdDE"
     end
     
-    response = Twitter.client.search("sport", :count=>3, :result_type => 'recent')
+    response = Twitter.client.search("sport", :count=>100, :result_type => 'recent')
     @text = response.results.collect {|t| t.text}.flatten
-    
-    
       
       content_id = 5153210
       
@@ -57,13 +55,19 @@ class GamesController < ApplicationController
   end
   
   def answer
+binding.pry
     user_id = params[:user_id]
     answer = params[:answer]
     answer = Answer::create( :user_id => user_id, :answer => answer )
-    answer.sawe!
-    
+    answer.save!
+
     # TODO: assign score
-    
+    @game = Game.first(:order => 'id desc')
+    similar_answers = Answer.where( :content_id => @game.content_id, :answer => answer).where_not(user_id => user_id)
+    if(similar_answers.length > 0)
+      
+    end
+    render :json => {:status=>'ok'}
   end
   
   def report
