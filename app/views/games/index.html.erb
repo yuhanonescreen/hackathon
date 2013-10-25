@@ -1,1 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript" src="http://10.101.100.208:8080/dist/_onescreen.js"></script>  
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+ <title>Hackathon | Hang With Friends</title>
 
+
+</head>
+    <body>
+        <div id="os_container" style="width:35%;margin:50px auto;">
+            <div id="contextual" style="width:640px;height:380px;"></div>
+        </div>
+        
+        <script>
+        	var content_id = <%= @game.content_id %>
+        	var start_time = <%= @game.created_at.to_i %>
+        </script>
+        <script>
+            com.onescreen.apps.load("10971-3c4a4a8a69f4c1ee7fd6d7fe72df7329", "contextual", {
+                textLocation: 'os_text',
+                searchable: true,
+                showThumbs:false,
+                searchUrl: 'http://data.1sfx.net/playlists/1005500/5589/1980/2316961.jsonp?plf=os',
+                playerRenderer: "http://10.101.100.208:8080/test/webroot/js/hackathonPlayer.js",
+            });
+        </script>
+        
+		<div id='text'>
+			<%= @text %>
+		</div>
+
+    </body>
+    
+    
+</html>

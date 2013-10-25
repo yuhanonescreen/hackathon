@@ -11,6 +11,7 @@ gem 'mysql2'
 gem 'pry'
 gem 'twitter'
 gem 'oauth'
+gem 'onescreen-internal'
 
 
 # Gems used only for assets and not required
