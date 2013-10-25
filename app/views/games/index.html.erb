@@ -39,3 +39,30 @@
     
 </html>
 
+<button id="myButton">create new </button>
+<button id="myButton2">get score</button>
+<script>
+$(document).ready(function() {
+	$('#myButton').click(function() {
+		$.ajax({
+			url: "/games/create_game",
+			type: "POST",
+			data: {"content_id" : content_id}
+		}).done(function() {
+			//window.location = "/games"
+		});
+	})
+		
+	$('#myButton2').click(function() {
+		$.ajax({
+			url: "/games/score",
+			type: "GET"
+		}).done(function() {
+			//window.location = "/games"
+		});
+	})
+	
+})
+	
+</script>
+

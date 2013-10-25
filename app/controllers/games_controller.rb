@@ -58,6 +58,8 @@ class GamesController < ApplicationController
     asset = OneScreen::Internal::Asset.find(asset_id)
     @game.duration = asset.duration / 1000
     @game.save!
+    
+    render :json => {:status => "ok"}
   end
   
   def score
@@ -69,7 +71,6 @@ class GamesController < ApplicationController
     users = Hash[ users.collect {|u| [u.id, u.score]}] 
     render :json => {:score=> user.score, :users => users}
   end
-  
 
   def answer
     user_id = cookies[:user_id]
