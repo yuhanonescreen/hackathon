@@ -1,0 +1,15 @@
+development:                                                                    
+  adapter: mysql2                                                               
+  database: hack                                                            
+  host: localhost                                                               
+  port: 3306                                                                    
+  username: root                                                                
+  password:                                                                     
+  timeout: 60000                                                                
+  name: master                                                                  
+                                                                                
+test:                                                                           
+  adapter: sqlite3                                                              
+  database: db/test.sqlite3                                                     
+  pool: 5                                                                       
+  timeout: 5000   
