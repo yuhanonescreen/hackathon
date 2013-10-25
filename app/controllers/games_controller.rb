@@ -1,6 +1,21 @@
 class GamesController < ApplicationController
 
   def index
+
+    user_id = cookies[:user_id]
+    
+    unless user_id
+      ip = request.remote_ip
+      user = User.where(:oauth_token=> ip).first
+      unless user
+        user = User.new
+        user.oauth_token = ip
+        user.save!
+      end
+
+      cookies[:user_id] = user.id
+    end
+
     @game = Game.first(:order => 'id desc')
 
     if( @game)
@@ -57,18 +72,20 @@ class GamesController < ApplicationController
     render :json => score
   end
   
-  def login
-    user = params[:user]
-  end
-  
+
   def answer
-    user_id = params[:user_id]
-    answer = params[:answer]
-    answer = Answer::create( :user_id => user_id, :answer => answer )
+    user_id = cookies[:user_id]
+    
+    answer = Answer.new
+    answer.user_id = user_id
+    answer.answer = params[:answer]
+binding.pry
+    answer.content_id = params[:content_id].to_i
     answer.save!
 
     @game = Game.first(:order => 'id desc')
-    similar_answers = Answer.where( :content_id => @game.content_id, :answer => answer).where_not(user_id => user_id)
+    similar_answers = Answer.where( :content_id => @game.content_id, :answer => answer)
+                  .where('user_id != ?', user_id)
     if(similar_answers.length > 0)
       similar_answers.each do |answer|
         user = User.find( answer.user_id )

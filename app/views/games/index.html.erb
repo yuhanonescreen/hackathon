@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <script type="text/javascript" src="http://10.101.100.208:8080/dist/_onescreen.js"></script>  
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
  <title>Hackathon | Hang With Friends</title>
 
@@ -25,7 +26,8 @@
                 playerRenderer: "http://10.101.100.208:8080/test/webroot/js/hackathonPlayer.js",
             });
         </script>
-        
+
+		<button id="answer">answer</button>
 		<div id='os_text'>
 			<%= @text %>
 		</div>
@@ -34,3 +36,16 @@
     
     
 </html>
+
+
+<script>
+	$('#answer').click(function() {
+		$.ajax({
+			url: "/games/answer",
+			type: "POST",
+			data: {answer : "test", "content_id" : content_id}
+		}).done(function() {
+			
+		});
+	})
+</script>
