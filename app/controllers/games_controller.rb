@@ -83,18 +83,20 @@ class GamesController < ApplicationController
     @game = Game.first(:order => 'id desc')
     similar_answers = Answer.where( :content_id => @game.content_id, :answer => answer)
                   .where('user_id != ?', user_id)
+    matched = false
     if(similar_answers.length > 0)
       similar_answers.each do |answer|
         user = User.find( answer.user_id )
         user.score += 1
         user.save!
+        matched = true
       end
       
       user = User.find( user_id )
       user.score += 1
       user.save!
     end
-    render :json => {:status=>'ok'}
+    render :json => {:matched =>  matched }
   end
   
   def report
