@@ -19,8 +19,8 @@ class GamesController < ApplicationController
     @game = Game.first(:order => 'id desc')
 
     if( @game)
-      time_passed = Time.now.to_i - @game.created_at.to_i
-      if( time_passed < @game.duration + 20 ) 
+      @time_passed = Time.now.to_i - @game.created_at.to_i
+      if( @time_passed < @game.duration + 10 ) 
         # play the f
           @content_id = @game.content_id
           @created_at = @game.created_at.to_i
@@ -30,6 +30,7 @@ class GamesController < ApplicationController
 
     @content_id = 0
     @created_at = 0
+    @time_passed = 0
     # TODO how to pick to video?
 
     Twitter.configure do |config|
@@ -43,7 +44,7 @@ class GamesController < ApplicationController
   
   def create_game
     content_id = params[:content_id]
-    
+
     @game = Game.new
     @game.content_id = content_id
     content = OneScreen::Internal::Content.find(content_id)
