@@ -12,7 +12,7 @@ class GamesController < ApplicationController
       end
     end
 
-      # TODO how to pick to video?
+    # TODO how to pick to video?
 
     Twitter.configure do |config|
       config.consumer_key = 'KJeCsg9oPlXd1FaPSokHQg'
@@ -21,7 +21,6 @@ class GamesController < ApplicationController
     
     response = Twitter.client.search("sport", :count=>100, :result_type => 'recent')
     @text = response.results.collect {|t| t.text}.flatten
-      
       content_id = 5153210
       
       # create a new game  
@@ -34,8 +33,16 @@ class GamesController < ApplicationController
       @game.save!
   end
   
-  def game
+  def create_game
+    content_id = params[:content_id]
     
+    @game = Game.new
+    @game.content_id = content_id
+    content = OneScreen::Internal::Content.find(content_id)
+    asset_id = content.preview_asset_id
+    asset = OneScreen::Internal::Asset.find(asset_id)
+    @game.duration = asset.duration / 1000
+    @game.save!
   end
   
   def score
@@ -55,17 +62,23 @@ class GamesController < ApplicationController
   end
   
   def answer
-binding.pry
     user_id = params[:user_id]
     answer = params[:answer]
     answer = Answer::create( :user_id => user_id, :answer => answer )
     answer.save!
 
-    # TODO: assign score
     @game = Game.first(:order => 'id desc')
     similar_answers = Answer.where( :content_id => @game.content_id, :answer => answer).where_not(user_id => user_id)
     if(similar_answers.length > 0)
+      similar_answers.each do |answer|
+        user = User.find( answer.user_id )
+        user.score += 1
+        user.save!
+      end
       
+      user = User.find( user_id )
+      user.score += 1
+      user.save!
     end
     render :json => {:status=>'ok'}
   end
